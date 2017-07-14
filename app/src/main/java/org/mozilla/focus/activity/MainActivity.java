@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -39,7 +40,7 @@ public class MainActivity extends LocaleAwareAppCompatActivity {
     private String pendingUrl;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         if (Settings.getInstance(this).shouldUseSecureMode()) {
@@ -96,6 +97,10 @@ public class MainActivity extends LocaleAwareAppCompatActivity {
 
     @Override
     protected void onStart() {
+
+
+        Log.w("SKDBG",   "Hello") ;
+
         super.onStart();
 
         BrowsingNotificationService.foreground(this);
