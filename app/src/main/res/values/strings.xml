@@ -151,6 +151,47 @@
     <!-- Item in Preferences that shows the about page. Parameter 1 is the app name, i.e. Firefox Focus/Firefox Klar. -->
     <string name="preference_about">About %1$s</string>
 
+    <!-- Header for the list of installed search engines -->
+    <string name="preference_search_installed_search_engines">Installed search engines</string>
+
+    <!-- Action for restoring the default list of search engines -->
+    <string name="preference_search_restore">Restore default search engines</string>
+
+    <!-- Action for adding an additional search engine to the list -->
+    <string name="preference_search_add">Add another search engine</string>
+
+    <string name="tutorial_search_title">Add search engine</string>
+    <string name="tutorial_search_step1">1. Go to the search engine homepage.</string>
+    <string name="tutorial_search_step2">2. Tap into the search engine\'s search field.</string>
+    <string name="tutorial_search_step2_alternative">Long press the search engine\'s search field.</string>
+    <string name="tutorial_search_step3">3. Tap the magnifying glass icon above the keyboard to add the search engine.</string>
+    <!-- TODO: Explain ADD SEARCH ENGINE uppercase -->
+    <string name="tutorial_search_step3_alternative">Tap ADD SEARCH ENGINE</string>
+    <!-- TODO: Split this string in two? "manually adding a search engine" should be a clickable action -->
+    <string name="tutorial_search_step4">If you don’t see the magnifying glass, try manually adding a search engine.</string>
+
+    <!-- TODO: Explain ADD SEARCH ENGINE uppercase -->
+    <!-- TODO: Split this string in two? "manually adding a search engine" should be a clickable action -->
+    <string name="tutorial_search_step4_alternative">4. If you don’t see ADD SEARCH ENGINE, try manually adding a search engine.</string>
+    <string name="tutorial_search_finish">Get started</string>
+
+    <string name="tutorial_search_alternative_title">Add search engine</string>
+
+    <string name="search_add_hint">Tap the magnifying glass icon above the keyboard to add this search engine.</string>
+
+    <string name="search_add_manually_name">Name to display</string>
+    <!-- TODO: Should we drop [] ? -->
+    <string name="search_add_manually_name_hint">[Search engine name]</string>
+    <string name="search_add_manually_string">Search string to use</string>
+    <!-- TODO: Should we drop [] ? -->
+    <string name="search_add_manually_string_hint">[Paste or enter search string. If necessary, replace search term with: %s.]</string>
+    <string name="search_add_manually_example">Example: searchengine.com/search/?q=%s</string>
+
+    <!-- TODO: Error states? Should we copy the iOS ones? -->
+    <!-- TODO: Accessbility strings for icon-only buttons? -->
+
+    <string name="search_add_confirmation">New search engine added.</string>
+
     <!-- Content description (not visible, for screen readers etc.): Clear text in URL bar -->
     <string name="content_description_clear_input">Clear input</string>
 
