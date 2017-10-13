@@ -48,6 +48,20 @@
   <string name="preference_mozilla_telemetry_summary2">A Mozilla arra törekszik, hogy csak azt gyűjtse, ami a %1$s fejlesztéséhez és támogatásához szükséges.</string>
   <string name="preference_privacy_notice">Adatvédelmi nyilatkozat</string>
   <string name="preference_about">A %1$s névjegye</string>
+  <string name="preference_search_installed_search_engines">Telepített keresőszolgáltatások</string>
+  <string name="preference_search_restore">Alapértelmezett keresőszolgáltatások visszaállítása</string>
+  <string name="preference_search_add">További keresőszolgáltatás felvétele</string>
+  <string name="preference_search_remove_title">Keresőszolgáltatások eltávolítása</string>
+  <string name="preference_search_remove">Eltávolítás</string>
+  <string name="tutorial_search_manually_add">Kézi hozzáadás</string>
+  <string name="tutorial_search_title">Keresőszolgáltatás hozzáadása</string>
+  <string name="search_add_manually_name">Megjelenítendő név</string>
+  <string name="search_add_manually_name_hint">Keresőszolgáltatás neve</string>
+  <string name="search_add_manually_save">Mentés</string>
+  <string name="search_add_manually_example">Példa: example.com/search/?q=%s</string>
+  <string name="accessibility_announcement_search">Keresőszolgáltatás hozzáadása</string>
+  <string name="search_add_confirmation">Új keresőszolgáltatás hozzáadása.</string>
+  <string name="search_add_error">Ellenőrizze a keresési karakterláncot, és próbálja újra</string>
   <string name="content_description_clear_input">Bemenet törlése</string>
   <string name="content_description_dismiss_input">Elutasítás</string>
   <string name="content_description_erase">Böngészési előzmények törlése</string>

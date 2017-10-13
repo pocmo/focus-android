@@ -48,6 +48,14 @@
   <string name="preference_mozilla_telemetry_summary2">Mozilla lucha por recolectar solo lo necesario para brindar y mejorar %1$s para todos.</string>
   <string name="preference_privacy_notice">Aviso de privacidad</string>
   <string name="preference_about">Acerca de %1$s</string>
+  <string name="preference_search_installed_search_engines">Motores de búsqueda instalados</string>
+  <string name="preference_search_restore">Restaurar los motores de búsuqeda predeterminados</string>
+  <string name="preference_search_add">Agregar otro motor de búsqueda</string>
+  <string name="preference_search_remove_title">Eliminar los motores de búsqueda</string>
+  <string name="preference_search_remove">Eliminar</string>
+  <string name="tutorial_search_manually_add">Agregar manualmente</string>
+  <string name="tutorial_search_title">Agregar motor de búsqueda</string>
+  <string name="tutorial_search_step1">1. Andá a la página de inicio del motor de búsqueda.</string>
   <string name="content_description_clear_input">Borrar entrada</string>
   <string name="content_description_dismiss_input">Descartar</string>
   <string name="content_description_erase">Limpiar historial de navegación</string>
