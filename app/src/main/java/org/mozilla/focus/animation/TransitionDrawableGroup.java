@@ -12,21 +12,32 @@ import android.graphics.drawable.TransitionDrawable;
 public class TransitionDrawableGroup {
     private final TransitionDrawable[] transitionDrawables;
 
+    private boolean transitioned;
+
     public TransitionDrawableGroup(TransitionDrawable... transitionDrawables) {
         this.transitionDrawables = transitionDrawables;
     }
 
-    public void startTransition(final int durationMillis) {
+    public synchronized void startTransition(final int durationMillis) {
+        if (transitioned) {
+            // We already played the start transition. Let's not play it again until it is reset.
+            return;
+        }
+
         // In theory, there are no guarantees these will play together.
         // In practice, I haven't noticed any problems.
         for (final TransitionDrawable transitionDrawable : transitionDrawables) {
             transitionDrawable.startTransition(durationMillis);
         }
+
+        transitioned = true;
     }
 
-    public void resetTransition() {
+    public synchronized void resetTransition() {
         for (final TransitionDrawable transitionDrawable : transitionDrawables) {
             transitionDrawable.resetTransition();
         }
+
+        transitioned = false;
     }
 }
