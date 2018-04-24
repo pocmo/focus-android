@@ -104,12 +104,21 @@ tasks:
 #   adjust token.
 ###############################################################################
   - provisionerId: '{{ taskcluster.docker.provisionerId }}'
-    workerType: '{{ taskcluster.docker.workerType }}'
+    workerType: 'gecko-focus'
     extra:
       github:
+        env: true
         events:
           - release
     scopes:
+      - "queue:create-task:aws-provisioner-v1/github-worker"
+      - "queue:create-task:lowest:aws-provisioner-v1/gecko-focus"
+      - "queue:create-task:lowest:scriptworker-prov-v1/mobile-signing-v1"
+      - "queue:create-task:lowest:scriptworker-prov-v1/mobile-pushapk-v1"
+      - "queue:scheduler-id:taskcluster-github"
+      - "project:mobile:focus:releng:signing:cert:release-signing"
+      - "project:mobile:focus:releng:signing:format:focus-jar"
+      - "project:mobile:focus:releng:googleplay:product:focus"
       - "secrets:get:project/focus/tokens"
     payload:
       maxRunTime: 3600
@@ -121,20 +130,20 @@ tasks:
         - '-cx'
         - >-
           git fetch origin --tags
-          && git config advice.detachedHead false
           && git checkout {{ event.version }}
-          && python tools/taskcluster/get-adjust-token.py
-          && python tools/l10n/filter-release-translations.py
-          && ./gradlew --no-daemon clean test assembleRelease
-      artifacts:
-        'public':
-          type: 'directory'
-          path: '/opt/focus-android/app/build/outputs/apk'
-          expires: "{{ '1 week' | $fromNow }}"
+          && git config advice.detachedHead false
+          && git checkout {{event.head.sha}}
+          && python tools/taskcluster/release.py --track alpha --commit
       features:
         taskclusterProxy: true
+        chainOfTrust: true
+      artifacts:
+        'public/task-graph.json':
+          type: 'file'
+          path: '/opt/focus-android/task-graph.json'
+          expires: "{{ '1 week' | $fromNow }}"
     metadata:
-      name: Focus for Android - Release build ({{ event.version }})
-      description: Building release versions of Firefox Focus/Klar
+      name: (Focus for Android) Decision task ({{ event.version }})
+      description: Scheduling tasks for releasing Focus/Klar
       owner: '{{ event.head.user.email }}'
       source: '{{ event.head.repo.url }}'
