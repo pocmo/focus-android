@@ -5,10 +5,10 @@
 package org.mozilla.focus.activity
 
 import android.os.Bundle
+import mozilla.components.browser.session.Session
+import mozilla.components.browser.session.tab.CustomTabConfig
 import mozilla.components.support.utils.SafeIntent
-import org.mozilla.focus.customtabs.CustomTabConfig
-import org.mozilla.focus.session.Session
-import org.mozilla.focus.session.SessionManager
+import org.mozilla.focus.ext.components
 
 /**
  * The main entry point for "custom tabs" opened by third-party apps.
@@ -16,16 +16,17 @@ import org.mozilla.focus.session.SessionManager
 class CustomTabActivity : MainActivity() {
     private lateinit var customTabId: String
     private val customTabSession: Session by lazy {
-        SessionManager.getInstance().getCustomTabSessionByCustomTabIdOrThrow(customTabId)
+        components.sessionManager.findSessionById(customTabId)
+            ?: throw IllegalAccessError("No session wiht id $customTabId")
     }
 
-    override fun isCustomTabMode(): Boolean = true
+    override val isCustomTabMode: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val intent = SafeIntent(intent)
-        customTabId = intent.getStringExtra(CustomTabConfig.EXTRA_CUSTOM_TAB_ID)
+        customTabId = intent.getStringExtra(CUSTOM_TAB_ID)
                 ?: throw IllegalAccessError("No custom tab id in intent")
     }
 
@@ -33,15 +34,13 @@ class CustomTabActivity : MainActivity() {
         super.onPause()
 
         if (isFinishing) {
-            // Remove custom tab session
-
-            val sessionManager: SessionManager = SessionManager.getInstance()
-
-            sessionManager
-                    .getCustomTabSessionByCustomTabId(customTabId)
-                    ?.let { sessionManager.removeCustomTabSession(it.uuid) }
+            components.sessionManager.remove(customTabSession)
         }
     }
 
-    override fun getCurrentSessionForActivity() = customTabSession
+    override val currentSessionForActivity: Session = customTabSession
+
+    companion object {
+        const val CUSTOM_TAB_ID = "custom_tab_id"
+    }
 }

@@ -28,7 +28,7 @@ public class SessionCallbackProxyTest {
         verify(session).setUrl(TEST_URL);
         verify(session).setLoading(true);
         verify(session).setSecure(false);
-        verify(session).setProgress(SessionCallbackProxy.MINIMUM_PROGRESS);
+        verify(session).setProgress(SessionCallbackProxy.Companion.getMINIMUM_PROGRESS());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class SessionCallbackProxyTest {
 
         proxy.onProgress(1);
 
-        verify(session).setProgress(SessionCallbackProxy.MINIMUM_PROGRESS);
+        verify(session).setProgress(SessionCallbackProxy.Companion.getMINIMUM_PROGRESS());
 
         proxy.onProgress(42);
 

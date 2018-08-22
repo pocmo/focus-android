@@ -7,6 +7,7 @@ package org.mozilla.focus.telemetry
 import android.content.Context
 import org.mozilla.focus.Components
 import org.mozilla.focus.R
+import org.mozilla.focus.ext.components
 import org.mozilla.focus.search.CustomSearchEngineStore
 import org.mozilla.focus.utils.Browsers
 import org.mozilla.focus.utils.Settings
@@ -56,7 +57,7 @@ internal class TelemetrySettingsProvider(
                 // If the user has never selected a search engine then this value is null.
                 // However we still want to report the current search engine of the user.
                 // Therefore we inject this value at runtime.
-                value = Components.searchEngineManager.getDefaultSearchEngine(
+                value = context.components.searchEngineManager.getDefaultSearchEngine(
                         context,
                         Settings.getInstance(context).defaultSearchEngineName
                 ).name

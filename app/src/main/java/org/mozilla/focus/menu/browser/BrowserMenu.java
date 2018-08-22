@@ -19,9 +19,10 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import org.mozilla.focus.R;
-import org.mozilla.focus.customtabs.CustomTabConfig;
 import org.mozilla.focus.fragment.BrowserFragment;
 import org.mozilla.focus.utils.ViewUtils;
+
+import mozilla.components.browser.session.tab.CustomTabConfig;
 
 /**
  * The overflow menu shown in the BrowserFragment containing page actions like "Refresh", "Share" etc.

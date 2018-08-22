@@ -9,6 +9,7 @@ import org.mozilla.focus.utils.Settings
 import java.util.Random
 import android.app.Activity
 import android.os.Build
+import mozilla.components.browser.session.Session
 import org.mozilla.focus.R.string.tip_open_in_new_tab
 import org.mozilla.focus.R.string.tip_set_default_browser
 import org.mozilla.focus.R.string.tip_add_to_homescreen
@@ -16,9 +17,8 @@ import org.mozilla.focus.R.string.tip_disable_tracking_protection
 import org.mozilla.focus.R.string.tip_autocomplete_url
 import org.mozilla.focus.R.string.tip_request_desktop
 import org.mozilla.focus.R.string.app_name
+import org.mozilla.focus.ext.components
 import org.mozilla.focus.locale.LocaleAwareAppCompatActivity
-import org.mozilla.focus.session.SessionManager
-import org.mozilla.focus.session.Source
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.SupportUtils
 
@@ -109,7 +109,9 @@ object TipManager {
         }
 
         val deepLinkAddToHomescreen = {
-            SessionManager.getInstance().createSession(Source.MENU, ADD_HOMESCREEN_URL)
+            val session = Session(ADD_HOMESCREEN_URL, Session.Source.MENU)
+            context.components.sessionManager.add(session)
+
             TelemetryWrapper.pressTipEvent(id)
         }
 
@@ -149,7 +151,9 @@ object TipManager {
         }
 
         val deepLinkAutocompleteUrl = {
-            SessionManager.getInstance().createSession(Source.MENU, AUTOCOMPLETE_URL)
+            val session = Session(AUTOCOMPLETE_URL, Session.Source.MENU)
+            context.components.sessionManager.add(session)
+
             TelemetryWrapper.pressTipEvent(id)
         }
 
@@ -165,7 +169,9 @@ object TipManager {
         }
 
         val deepLinkOpenInNewTab = {
-            SessionManager.getInstance().createSession(Source.MENU, NEW_TAB_URL)
+            val session = Session(NEW_TAB_URL, Session.Source.MENU)
+            context.components.sessionManager.add(session)
+
             TelemetryWrapper.pressTipEvent(id)
         }
 
@@ -181,7 +187,9 @@ object TipManager {
         }
 
         val deepLinkOpenInNewTab = {
-            SessionManager.getInstance().createSession(Source.MENU, REQUEST_DESKTOP_URL)
+            val session = Session(REQUEST_DESKTOP_URL, Session.Source.MENU)
+            context.components.sessionManager.add(session)
+
             TelemetryWrapper.pressTipEvent(id)
         }
 

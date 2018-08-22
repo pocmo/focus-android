@@ -7,8 +7,8 @@ package org.mozilla.focus.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import mozilla.components.browser.session.tab.CustomTabConfig
 import mozilla.components.support.utils.SafeIntent
-import org.mozilla.focus.customtabs.CustomTabConfig
 import java.util.UUID
 
 /**
@@ -36,7 +36,7 @@ class IntentReceiverActivity : Activity() {
 
         // We are adding a generated custom tab ID to the intent here. CustomTabActivity will
         // use this ID to later decide what session to display once it is created.
-        intent.putExtra(CustomTabConfig.EXTRA_CUSTOM_TAB_ID, UUID.randomUUID().toString())
+        intent.putExtra(CustomTabActivity.CUSTOM_TAB_ID, UUID.randomUUID().toString())
 
         startActivity(intent)
     }

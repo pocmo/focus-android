@@ -181,6 +181,8 @@ dependencies {
     implementation "org.mozilla.components:search:$mozilla_components_version"
     implementation "org.mozilla.photon:colors:$mozilla_components_version"
     implementation "org.mozilla.components:fretboard:$mozilla_components_version"
+    implementation "org.mozilla.components:session:$mozilla_components_version"
+    implementation "org.mozilla.components:engine:$mozilla_components_version"
 
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 

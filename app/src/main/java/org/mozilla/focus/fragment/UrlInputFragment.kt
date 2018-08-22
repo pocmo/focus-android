@@ -30,20 +30,20 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_urlinput.*
 import kotlinx.android.synthetic.main.fragment_urlinput.view.homeViewTipsLabel
 import mozilla.components.browser.domains.DomainAutoCompleteProvider
+import mozilla.components.browser.session.Session
 import mozilla.components.support.utils.ThreadUtils
 import mozilla.components.ui.autocomplete.InlineAutocompleteEditText
 import mozilla.components.ui.autocomplete.InlineAutocompleteEditText.AutocompleteResult
 import org.mozilla.focus.R
 import org.mozilla.focus.R.string.pref_key_homescreen_tips
 import org.mozilla.focus.R.string.teaser
+import org.mozilla.focus.ext.isSearch
+import org.mozilla.focus.ext.requireComponents
 import org.mozilla.focus.locale.LocaleAwareAppCompatActivity
 import org.mozilla.focus.locale.LocaleAwareFragment
 import org.mozilla.focus.menu.home.HomeMenu
 import org.mozilla.focus.searchsuggestions.SearchSuggestionsViewModel
 import org.mozilla.focus.searchsuggestions.ui.SearchSuggestionsFragment
-import org.mozilla.focus.session.Session
-import org.mozilla.focus.session.SessionManager
-import org.mozilla.focus.session.Source
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.tips.TipManager
 import org.mozilla.focus.utils.Features
@@ -102,7 +102,7 @@ class UrlInputFragment :
         fun createWithSession(session: Session, urlView: View): UrlInputFragment {
             val arguments = Bundle()
 
-            arguments.putString(ARGUMENT_SESSION_UUID, session.uuid)
+            arguments.putString(ARGUMENT_SESSION_UUID, session.id)
             arguments.putString(ARGUMENT_ANIMATION, ANIMATION_BROWSER_SCREEN)
 
             val screenLocation = IntArray(2)
@@ -156,9 +156,8 @@ class UrlInputFragment :
             .registerOnSharedPreferenceChangeListener(this)
 
         // Get session from session manager if there's a session UUID in the fragment's arguments
-        arguments?.getString(ARGUMENT_SESSION_UUID)?.let {
-            session = if (SessionManager.getInstance().hasSessionWithUUID(it)) SessionManager
-                .getInstance().getSessionByUUID(it) else null
+        arguments?.getString(ARGUMENT_SESSION_UUID)?.let { id ->
+            session = requireComponents.sessionManager.findSessionById(id)
         }
     }
 
@@ -289,7 +288,7 @@ class UrlInputFragment :
 
         session?.let {
             urlView?.setText(if (it.isSearch && Features.SEARCH_TERMS_OR_URL) it.searchTerms else
-                it.url.value)
+                it.url)
             clearView?.visibility = View.VISIBLE
             searchViewContainer?.visibility = View.GONE
         }
@@ -376,14 +375,18 @@ class UrlInputFragment :
 
                 WhatsNew.userViewedWhatsNew(it)
 
-                SessionManager.getInstance().createSession(Source.MENU,
-                    SupportUtils.getSumoURLForTopic(context, SupportUtils.SumoTopic.WHATS_NEW))
+                val url = SupportUtils.getSumoURLForTopic(it, SupportUtils.SumoTopic.WHATS_NEW)
+                val session = Session(url, Session.Source.MENU)
+
+                requireComponents.sessionManager.add(session, selected = true)
             }
 
             R.id.settings -> (activity as LocaleAwareAppCompatActivity).openPreferences()
 
             R.id.help -> {
-                SessionManager.getInstance().createSession(Source.MENU, SupportUtils.HELP_URL)
+                val session = Session(SupportUtils.HELP_URL, Session.Source.MENU)
+
+                requireComponents.sessionManager.add(session, selected = true)
             }
 
             else -> throw IllegalStateException("Unhandled view in onClick()")
@@ -623,7 +626,9 @@ class UrlInputFragment :
     }
 
     private fun openUrl(url: String, searchTerms: String?) {
-        session?.searchTerms = searchTerms
+        if (!searchTerms.isNullOrEmpty()) {
+            session?.searchTerms = searchTerms!!
+        }
 
         val fragmentManager = activity!!.supportFragmentManager
 
@@ -643,12 +648,12 @@ class UrlInputFragment :
                 .remove(this)
                 .commit()
         } else {
-            if (!TextUtils.isEmpty(searchTerms)) {
-                SessionManager.getInstance()
-                    .createSearchSession(Source.USER_ENTERED, url, searchTerms)
-            } else {
-                SessionManager.getInstance().createSession(Source.USER_ENTERED, url)
+            val session = Session(url, Session.Source.USER_ENTERED)
+            if (!searchTerms.isNullOrEmpty()) {
+                session.searchTerms = searchTerms!!
             }
+
+            requireComponents.sessionManager.add(session, selected = true)
         }
     }
 

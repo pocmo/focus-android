@@ -29,12 +29,12 @@ import kotlinx.android.synthetic.main.fragment_search_suggestions.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import mozilla.components.browser.session.Session
 
 import org.mozilla.focus.R
+import org.mozilla.focus.ext.requireComponents
 import org.mozilla.focus.searchsuggestions.SearchSuggestionsViewModel
 import org.mozilla.focus.searchsuggestions.State
-import org.mozilla.focus.session.SessionManager
-import org.mozilla.focus.session.Source
 import org.mozilla.focus.utils.SupportUtils
 
 class SearchSuggestionsFragment : Fragment() {
@@ -147,8 +147,10 @@ class SearchSuggestionsFragment : Fragment() {
 
         val learnMoreSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                val url = SupportUtils.getSumoURLForTopic(context, SupportUtils.SumoTopic.SEARCH_SUGGESTIONS)
-                SessionManager.getInstance().createSession(Source.MENU, url)
+                val url = SupportUtils.getSumoURLForTopic(textView.context, SupportUtils.SumoTopic.SEARCH_SUGGESTIONS)
+
+                val session = Session(url, Session.Source.MENU)
+                requireComponents.sessionManager.add(session, selected = true)
             }
 
             override fun updateDrawState(ds: TextPaint?) {

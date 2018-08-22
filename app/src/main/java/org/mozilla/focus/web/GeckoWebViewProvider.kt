@@ -19,11 +19,12 @@ import android.view.View
 import android.webkit.WebSettings
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
+import mozilla.components.browser.session.Session
 import org.json.JSONException
 import org.mozilla.focus.browser.LocalizedContent
+import org.mozilla.focus.ext.savedWebViewState
 import org.mozilla.focus.gecko.GeckoViewPrompt
 import org.mozilla.focus.gecko.NestedGeckoView
-import org.mozilla.focus.session.Session
 import org.mozilla.focus.telemetry.SentryWrapper
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.AppConstants
@@ -495,8 +496,8 @@ class GeckoWebViewProvider : IWebViewProvider {
         }
 
         override fun restoreWebViewState(session: Session) {
-            val stateData = session.webViewState
-            val desiredURL = session.url.value
+            val stateData = session.savedWebViewState!!
+            val desiredURL = session.url
             val sessionState = stateData.getParcelable<GeckoSession.SessionState>("state")
             if (sessionState != null) {
                 geckoSession.restoreState(sessionState)
@@ -508,7 +509,7 @@ class GeckoWebViewProvider : IWebViewProvider {
         override fun saveWebViewState(session: Session) {
             val sessionBundle = saveStateInBackground()
             if (sessionBundle.containsKey("state")) {
-                session.saveWebViewState(sessionBundle)
+                session.savedWebViewState = sessionBundle
             }
         }
 

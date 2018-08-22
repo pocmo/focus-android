@@ -13,20 +13,20 @@ import kotlinx.coroutines.experimental.launch
 import mozilla.components.service.fretboard.Fretboard
 import mozilla.components.service.fretboard.source.kinto.KintoExperimentSource
 import mozilla.components.service.fretboard.storage.flatfile.FlatFileExperimentStorage
+import org.mozilla.focus.ext.components
 import org.mozilla.focus.locale.LocaleAwareApplication
 import org.mozilla.focus.session.NotificationSessionObserver
-import org.mozilla.focus.session.SessionManager
 import org.mozilla.focus.session.VisibilityLifeCycleCallback
 import org.mozilla.focus.telemetry.SentryWrapper
 import org.mozilla.focus.telemetry.TelemetrySessionObserver
 import org.mozilla.focus.telemetry.TelemetryWrapper
-import org.mozilla.focus.utils.StethoWrapper
 import org.mozilla.focus.utils.AdjustHelper
 import org.mozilla.focus.utils.AppConstants
 import org.mozilla.focus.utils.EXPERIMENTS_BASE_URL
-import org.mozilla.focus.utils.EXPERIMENTS_JSON_FILENAME
 import org.mozilla.focus.utils.EXPERIMENTS_BUCKET_NAME
 import org.mozilla.focus.utils.EXPERIMENTS_COLLECTION_NAME
+import org.mozilla.focus.utils.EXPERIMENTS_JSON_FILENAME
+import org.mozilla.focus.utils.StethoWrapper
 import org.mozilla.focus.web.CleanupSessionObserver
 import org.mozilla.focus.web.WebViewProvider
 import java.io.File
@@ -38,6 +38,8 @@ val IO: CoroutineDispatcher by lazy {
 
 class FocusApplication : LocaleAwareApplication() {
     lateinit var fretboard: Fretboard
+
+    val components: Components by lazy { Components() }
 
     var visibilityLifeCycleCallback: VisibilityLifeCycleCallback? = null
         private set
@@ -54,7 +56,7 @@ class FocusApplication : LocaleAwareApplication() {
 
         enableStrictMode()
 
-        Components.searchEngineManager.apply {
+        components.searchEngineManager.apply {
             launch(IO) {
                 load(this@FocusApplication)
             }
@@ -70,13 +72,11 @@ class FocusApplication : LocaleAwareApplication() {
         visibilityLifeCycleCallback = VisibilityLifeCycleCallback(this)
         registerActivityLifecycleCallbacks(visibilityLifeCycleCallback)
 
-        val sessions = SessionManager.getInstance().sessions
-        sessions.observeForever(NotificationSessionObserver(this))
-        sessions.observeForever(TelemetrySessionObserver())
-        sessions.observeForever(CleanupSessionObserver(this))
-
-        val customTabSessions = SessionManager.getInstance().customTabSessions
-        customTabSessions.observeForever(TelemetrySessionObserver())
+        components.sessionManager.apply {
+            register(NotificationSessionObserver(this@FocusApplication))
+            register(TelemetrySessionObserver())
+            register(CleanupSessionObserver(this@FocusApplication))
+        }
     }
 
     private fun loadExperiments() {

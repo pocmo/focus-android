@@ -10,9 +10,9 @@ import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.TextView
+import mozilla.components.browser.session.Session
 import org.mozilla.focus.R
-import org.mozilla.focus.session.SessionManager
-import org.mozilla.focus.session.Source
+import org.mozilla.focus.ext.components
 
 abstract class LearnMoreSwitchPreference(context: Context?, attrs: AttributeSet?) :
     SwitchPreferenceCompat(context, attrs) {
@@ -36,7 +36,12 @@ abstract class LearnMoreSwitchPreference(context: Context?, attrs: AttributeSet?
         learnMoreLink.setOnClickListener {
             // This is a hardcoded link: if we ever end up needing more of these links, we should
             // move the link into an xml parameter, but there's no advantage to making it configurable now.
-            SessionManager.getInstance().createSession(Source.MENU, getLearnMoreUrl())
+
+            context?.apply {
+                val session = Session(getLearnMoreUrl(), Session.Source.MENU)
+                components.sessionManager.add(session)
+            }
+
             if (context is ContextThemeWrapper) {
                 if ((context as ContextThemeWrapper).baseContext is Activity) {
                     ((context as ContextThemeWrapper).baseContext as Activity).finish()

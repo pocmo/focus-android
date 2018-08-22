@@ -7,10 +7,10 @@ package org.mozilla.focus.settings
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.preference.Preference
+import mozilla.components.browser.session.Session
 import org.mozilla.focus.R
 import org.mozilla.focus.browser.LocalizedContent
-import org.mozilla.focus.session.SessionManager
-import org.mozilla.focus.session.Source
+import org.mozilla.focus.ext.components
 import org.mozilla.focus.telemetry.TelemetryWrapper
 import org.mozilla.focus.utils.AppConstants
 import org.mozilla.focus.utils.SupportUtils
@@ -43,23 +43,37 @@ class MozillaSettingsFragment : BaseSettingsFragment(),
         // "preference screens" into separate activities.
         when (preference.key) {
             resources.getString(R.string.pref_key_about) -> run {
-                SessionManager.getInstance().createSession(Source.MENU, LocalizedContent.URL_ABOUT)
-                activity!!.finish()
+                activity?.apply {
+                    val session = Session(LocalizedContent.URL_ABOUT, Session.Source.MENU)
+                    components.sessionManager.add(session)
+                    finish()
+                }
             }
             resources.getString(R.string.pref_key_help) -> run {
-                SessionManager.getInstance().createSession(Source.MENU, SupportUtils.HELP_URL)
-                activity!!.finish()
+                activity?.apply {
+                    val session = Session(SupportUtils.HELP_URL, Session.Source.MENU)
+                    components.sessionManager.add(session)
+                    finish()
+                }
             }
             resources.getString(R.string.pref_key_rights) -> run {
-                SessionManager.getInstance().createSession(Source.MENU, LocalizedContent.URL_RIGHTS)
-                activity!!.finish()
+                activity?.apply {
+                    val session = Session(LocalizedContent.URL_RIGHTS, Session.Source.MENU)
+                    components.sessionManager.add(session)
+                    finish()
+                }
             }
             resources.getString(R.string.pref_key_privacy_notice) -> {
-                SessionManager.getInstance().createSession(Source.MENU, if (AppConstants.isKlarBuild)
-                    SupportUtils.PRIVACY_NOTICE_KLAR_URL
-                else
-                    SupportUtils.PRIVACY_NOTICE_URL)
-                activity!!.finish()
+                activity?.apply {
+                    val url = if (AppConstants.isKlarBuild)
+                        SupportUtils.PRIVACY_NOTICE_KLAR_URL
+                    else
+                        SupportUtils.PRIVACY_NOTICE_URL
+
+                    val session = Session(url, Session.Source.MENU)
+                    components.sessionManager.add(session)
+                    finish()
+                }
             }
         }
         return super.onPreferenceTreeClick(preference)
@@ -70,9 +84,6 @@ class MozillaSettingsFragment : BaseSettingsFragment(),
     }
 
     companion object {
-
-        fun newInstance(): MozillaSettingsFragment {
-            return MozillaSettingsFragment()
-        }
+        fun newInstance(): MozillaSettingsFragment = MozillaSettingsFragment()
     }
 }
