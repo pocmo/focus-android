@@ -37,6 +37,10 @@ android {
         lintConfig file("lint.xml")
     }
 
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
+
     // We have a three dimensional build configuration:
     // BUILD TYPE (debug, release) X PRODUCT FLAVOR (focus, klar) X ARCHITECTURE (x86, arm, aarch64)
 
