@@ -26,13 +26,20 @@ import org.mozilla.focus.telemetry.TelemetryWrapper
  * As long as a session is active this service will keep the notification (and our process) alive.
  */
 class SessionNotificationService : Service() {
+    override fun onCreate() {
+        super.onCreate()
+
+        startForeground(NOTIFICATION_ID, buildNotification())
+    }
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        startForeground(NOTIFICATION_ID, buildNotification())
+
         val action = intent.action ?: return Service.START_NOT_STICKY
 
         when (action) {
             ACTION_START -> {
                 createNotificationChannelIfNeeded()
-                startForeground(NOTIFICATION_ID, buildNotification())
             }
 
             ACTION_ERASE -> {
@@ -41,6 +48,10 @@ class SessionNotificationService : Service() {
                 components.sessionManager.removeSessions()
 
                 VisibilityLifeCycleCallback.finishAndRemoveTaskIfInBackground(this)
+            }
+
+            ACTION_STOP -> {
+                stopSelf()
             }
 
             else -> throw IllegalStateException("Unknown intent: $intent")
@@ -146,6 +157,7 @@ class SessionNotificationService : Service() {
 
         private const val ACTION_START = "start"
         private const val ACTION_ERASE = "erase"
+        private const val ACTION_STOP = "stop"
 
         internal fun start(context: Context) {
             val intent = Intent(context, SessionNotificationService::class.java)
@@ -156,21 +168,18 @@ class SessionNotificationService : Service() {
             // calls by running this after potentially expensive calls in FocusApplication.onCreate and
             // BrowserFragment.inflateView by posting it to the end of the main thread.
             ThreadUtils.postToMainThread(Runnable {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(intent)
-                } else {
-                    context.startService(intent)
-                }
+                ContextCompat.startForegroundService(context, intent)
             })
         }
 
         internal fun stop(context: Context) {
             val intent = Intent(context, SessionNotificationService::class.java)
+            intent.action = ACTION_STOP
 
             // We want to make sure we always call stop after start. So we're
             // putting these actions on the same sequential run queue.
             ThreadUtils.postToMainThread(Runnable {
-                context.stopService(intent)
+                ContextCompat.startForegroundService(context, intent)
             })
         }
     }
