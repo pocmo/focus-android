@@ -25,7 +25,6 @@ private fun getOrPutExtension(session: Session): SessionExtension {
 private class SessionExtension {
     var savedGeckoSession: GeckoSession? = null
     var savedWebViewState: Bundle? = null
-    var shouldRequestDesktopSite: Boolean = false
 }
 
 /**
@@ -52,13 +51,3 @@ var Session.savedGeckoSession: GeckoSession?
 var Session.savedWebViewState: Bundle?
     get() = getOrPutExtension(this).savedWebViewState
     set(value) { getOrPutExtension(this).savedWebViewState = value }
-
-/**
- * Whether to use desktop mode for this session.
- *
- * Component upstream issue:
- * https://github.com/mozilla-mobile/android-components/issues/701
- */
-var Session.shouldRequestDesktopSite: Boolean
-    get() = getOrPutExtension(this).shouldRequestDesktopSite
-    set(value) { getOrPutExtension(this).shouldRequestDesktopSite = value }
