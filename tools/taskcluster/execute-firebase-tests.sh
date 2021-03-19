@@ -12,31 +12,11 @@
 #   (not on Firebase dashboard)
 
 
-# If a command fails then do not proceed and fail this script too.
-set -e
-#########################
-# The command line help #
-#########################
-display_help() {
-    echo "Usage: $0 device_type [x86 | arm] build_variant [webview | geckoview]" >&2
-    echo
-    echo "NOTE: All Build Variants are be of Debug type"
-    echo
-}
-
-# Basic parameter check
-if [ $# -lt 2 ]; then
-    echo "Your command line contains $# arguments"
-    display_help
-    exit 1
-fi
-
 # From now on disable exiting on error. If the tests fail we want to continue
 # and try to download the artifacts. We will exit with the actual error code later.
 set +e
 
-
-URL_FLANK_BIN=`curl -s https://api.github.com/repos/TestArmada/flank/releases/latest | grep "browser_download_url*" | cut -d '"' -f 4`
+URL_FLANK_BIN="https://github.com/Flank/flank/releases/download/v21.03.1/flank.jar"
 JAVA_BIN="/usr/bin/java"
 WORKDIR="/opt/focus-android"
 PATH_TEST="$WORKDIR/app/src/androidTest/java/org/mozilla/focus/activity"
@@ -48,16 +28,7 @@ FLANK_CONF="$PATH_TOOLS/flank.yml"
 echo "home: $HOME"
 export GOOGLE_APPLICATION_CREDENTIALS="$WORKDIR/.firebase_token.json"
 
-if [ "$1" == "x86" ] || [ "$1" == "arm" ]; then
-    if [ "$2" == "geckoview" ] || [ "$2" == "webview" ]; then
-        FLANK_CONF_TEMPLATE="$PATH_TOOLS/flank-conf-${2}-${1}.yml"
-    else
-	echo "ERROR: $1 does not match [x86 | arm]"
-        echo "or"
-	echo "ERROR: $2 does not match [geckoview | webview]"
-	exit 1
-    fi
-fi
+FLANK_CONF_TEMPLATE="$PATH_TOOLS/flank-conf.yml"
 
 rm  -f TEST_TARGETS 
 rm  -f $FLANK_BIN
@@ -71,7 +42,8 @@ echo "FLANK_CONF: $FLANK_CONF"
 echo "FLANK_BIN: $FLANK_BIN"
 echo
 
-wget $URL_FLANK_BIN -O $FLANK_BIN 
+curl --location --retry 5 --output $FLANK_BIN $URL_FLANK_BIN
+
 echo
 echo "---------------------------------------"
 echo "FLANK VERSION"
