@@ -151,7 +151,7 @@ if __name__ == "__main__":
     clTaskId, clTask = generate_compare_locales_task()
     schedule_task(queue, clTaskId, clTask)
 
-    uiTestTaskId, uiTestTask = generate_ui_test_task( [unitTestTaskId, codeQualityTaskId])
+    uiTestTaskId, uiTestTask = generate_ui_test_task( [])
     schedule_task(queue, uiTestTaskId, uiTestTask)
 
 
