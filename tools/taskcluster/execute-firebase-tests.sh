@@ -52,30 +52,31 @@ chmod +x $FLANK_BIN
 $JAVA_BIN -jar $FLANK_BIN -v
 echo
 echo
-
+echo "---------------------------------------"
 
 # create TEST_TARGETS 
 # (aka: get list of all tests in androidTest)
-file_list=$(ls $PATH_TEST | xargs -n 1 basename)
-array=( $file_list )
 
-test_targets=""
-for i in "${array[@]}"; do
-    test_list=`cat $PATH_TEST/$i | grep -hr "public void" | grep 'Test\|test'| sed 's/ \{1,\}/ /g'  | cut -d" " -f 4 | sed 's/()//g'`
-    array2=( $test_list)
-    test_file=$(basename $i .java)
-    
-    for j in "${array2[@]}"; do
-        echo "    - class $PACKAGE.$test_file#$j" >> TEST_TARGETS
-    done
-done
+# file_list=$(ls $PATH_TEST | xargs -n 1 basename)
+# 3array=( $file_list )
 
-test_targets=`cat TEST_TARGETS`
-test_targets=$(echo "${test_targets}" | sed '$!s~$~\\~g')
+# test_targets=""
+# for i in "${array[@]}"; do
+#    test_list=`cat $PATH_TEST/$i | grep -hr "public void" | grep 'Test\|test'| sed 's/ \{1,\}/ /g'  | cut -d" " -f 4 | sed 's/()//g'`
+#    array2=( $test_list)
+#    test_file=$(basename $i .java)
+#
+#    for j in "${array2[@]}"; do
+#        echo "    - class $PACKAGE.$test_file#$j" >> TEST_TARGETS
+#    done
+#done
+
+#test_targets=`cat TEST_TARGETS`
+#test_targets=$(echo "${test_targets}" | sed '$!s~$~\\~g')
 
 # create flank.yml config file 
-sed "s/TEST_TARGETS/${test_targets}/g" $FLANK_CONF_TEMPLATE > $FLANK_CONF
-rm -f TEST_TARGETS
+#sed "s/TEST_TARGETS/${test_targets}/g" $FLANK_CONF_TEMPLATE > $FLANK_CONF
+#rm -f TEST_TARGETS
 $JAVA_BIN -jar $FLANK_BIN android run --config=$FLANK_CONF
 exitcode=$?
 
