@@ -21,7 +21,7 @@ JAVA_BIN="/usr/bin/java"
 WORKDIR="/opt/focus-android"
 PATH_TEST="$WORKDIR/app/src/androidTest/java/org/mozilla/focus/activity"
 PATH_TOOLS="$WORKDIR/tools/taskcluster"
-PACKAGE="org.mozilla.focus.activity"
+PACKAGE="org.mozilla.focus.a ctivity"
 FLANK_BIN="$PATH_TOOLS/flank.jar"
 FLANK_CONF="$PATH_TOOLS/flank.yml"
 
