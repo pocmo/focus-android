@@ -41,9 +41,11 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            matchingFallbacks = ['release']
         }
         debug {
             applicationIdSuffix ".debug"
+            matchingFallbacks = ['debug']
         }
         nightly {
             initWith release
@@ -170,7 +172,7 @@ dependencies {
     implementation "org.mozilla.components:ui-colors:$mozilla_components_version"
 
     implementation 'com.squareup.okhttp3:okhttp:3.14.1'
-    implementation project(path: ':service-telemetry', configuration: 'default')
+    implementation project(':service-telemetry')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
